@@ -1,5 +1,6 @@
 import tkinter as tk
 from settings import Settings
+from content import Content
 
 class App(tk.Frame):
 	def __init__(self, parent, *args, **kwargs):
@@ -7,7 +8,10 @@ class App(tk.Frame):
 		self.parent = parent
 		self.parent.title('todo.txt')
 
-		self.settings = Settings(self)
+		self.content = Content(self)
+		self.content.grid(row=0, column=0, sticky='nsew')
+
+		self.settings = Settings(self, self.content)
 		self.parent.configure(menu=self.settings)
 
 

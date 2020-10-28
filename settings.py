@@ -1,10 +1,17 @@
 from tkinter import Menu
+from tkinter.filedialog import askopenfilename
+from pathlib import Path
 
 class Settings(Menu):
-	def __init__(self, parent, *args, **kwargs):
+	def __init__(self, parent, content, *args, **kwargs):
 		Menu.__init__(self, parent, *args, **kwargs)
 		self.parent = parent
+		self.content = content
 
+		# data
+		self.todo_file = ''
+
+		# top level cascades
 		self.settingsMenu = Menu(self, tearoff=0)
 
 		self.cascades = [
@@ -13,6 +20,7 @@ class Settings(Menu):
 				'menu': self.settingsMenu,
 				'choices': [
 					("set 'todo.txt' file", self.set_todo_file),
+					("refresh from file", self.refresh_from_file)
 				]
 			},
 		]
@@ -27,3 +35,19 @@ class Settings(Menu):
 
 	def set_todo_file(self):
 		print('set_todo_file')
+		initialdir = str(Path.home())
+		new_todo_file = askopenfilename(
+			initialdir=initialdir,
+			title="Set 'todo.txt' file",
+			filetypes=(("TXT File", "*.txt"), ("all files", "*.*"))
+		)
+		
+		if not new_todo_file:
+			return
+		
+		self.todo_file = new_todo_file
+
+		self.refresh_from_file()
+
+	def refresh_from_file(self):
+		self.content.refresh(self.todo_file)
